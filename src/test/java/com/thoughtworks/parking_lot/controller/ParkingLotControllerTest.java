@@ -59,4 +59,10 @@ class ParkingLotControllerTest {
         ResultActions result = mvc.perform(delete("/parkingLots/Parking 1"));
         result.andExpect(status().isOk());
     }
+
+    @Test
+    void should_not_delete_and_return_not_found_when_parking_lot_not_exist() throws Exception {
+        ResultActions result = mvc.perform(delete("/parkingLots/Parking 1"));
+        result.andExpect(status().isNotFound());
+    }
 }

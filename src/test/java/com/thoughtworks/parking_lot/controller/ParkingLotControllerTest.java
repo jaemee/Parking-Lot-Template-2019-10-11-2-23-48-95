@@ -72,4 +72,16 @@ class ParkingLotControllerTest {
                 .contentType(MediaType.APPLICATION_JSON).param("page", "0"));
         result.andExpect(status().isOk());
     }
+
+    @Test
+    void should_return_specific_parking_lot_when_input_by_name() throws Exception {
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setName("Parking1");
+        parkingLot.setCapacity(15);
+        when(parkingLotService.findByNameLike("Parking1")).thenReturn(parkingLot);
+        ResultActions result = mvc.perform(get("/parkingLots/Parking1")
+                .contentType(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.capacity", is(15)));
+    }
 }

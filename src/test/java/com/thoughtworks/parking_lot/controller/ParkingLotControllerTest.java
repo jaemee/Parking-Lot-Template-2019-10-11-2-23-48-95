@@ -4,6 +4,7 @@ import antlr.build.Tool;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.parking_lot.entity.ParkingLot;
+import com.thoughtworks.parking_lot.repository.ParkingLotRepository;
 import com.thoughtworks.parking_lot.service.ParkingLotService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +21,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -39,6 +41,9 @@ class ParkingLotControllerTest {
     @MockBean
     private ParkingLotService parkingLotService;
 
+    @MockBean
+    private ParkingLotRepository parkingLotRepo;
+
     @Test
     void should_add_parkingLot() throws Exception {
         ParkingLot parkingLot = new ParkingLot();
@@ -50,12 +55,8 @@ class ParkingLotControllerTest {
 
     @Test
     void should_return_ok_when_parking_lot_deleted() throws Exception {
-        ParkingLot parkingLot = new ParkingLot();
-        parkingLot.setName("Parking 1");
         when(parkingLotService.delete("Parking 1")).thenReturn(true);
-        ResultActions result = mvc.perform(delete("/parkingLots")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(parkingLot)));
+        ResultActions result = mvc.perform(delete("/parkingLots/Parking 1"));
         result.andExpect(status().isOk());
     }
 }

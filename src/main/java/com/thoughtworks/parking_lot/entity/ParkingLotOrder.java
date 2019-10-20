@@ -4,7 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Entity
 public class ParkingLotOrder {
@@ -21,8 +21,8 @@ public class ParkingLotOrder {
     @JoinColumn(name = "parkingLot_name")
     private ParkingLot parkingLot;
 
-    private LocalTime createTime;
-    private LocalTime closeTime;
+    private LocalDateTime createTime;
+    private LocalDateTime closeTime;
     private String status;
 
     public String getOrderNumber() {
@@ -41,27 +41,19 @@ public class ParkingLotOrder {
         this.plateNumber = plateNumber;
     }
 
-    public ParkingLot getParkingLot() {
-        return parkingLot;
-    }
-
-    public void setParkingLot(ParkingLot parkingLot) {
-        this.parkingLot = parkingLot;
-    }
-
-    public LocalTime getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(LocalTime createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
-    public LocalTime getCloseTime() {
+    public LocalDateTime getCloseTime() {
         return closeTime;
     }
 
-    public void setCloseTime(LocalTime closeTime) {
+    public void setCloseTime(LocalDateTime closeTime) {
         this.closeTime = closeTime;
     }
 
@@ -72,4 +64,9 @@ public class ParkingLotOrder {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public void setParkingLot(ParkingLot parkingLot) {
+        this.parkingLot = parkingLot;
+    }
+
 }

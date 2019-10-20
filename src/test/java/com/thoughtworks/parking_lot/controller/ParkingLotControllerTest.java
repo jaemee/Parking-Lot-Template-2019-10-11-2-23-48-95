@@ -15,11 +15,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.awt.print.Pageable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
-import java.util.stream.IntStream;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
@@ -78,10 +74,24 @@ class ParkingLotControllerTest {
         ParkingLot parkingLot = new ParkingLot();
         parkingLot.setName("Parking1");
         parkingLot.setCapacity(15);
-        when(parkingLotService.findByNameLike("Parking1")).thenReturn(parkingLot);
+        when(parkingLotService.findByNameLike("Parking1")).thenReturn(Optional.of(parkingLot));
         ResultActions result = mvc.perform(get("/parkingLots/Parking1")
                 .contentType(MediaType.APPLICATION_JSON));
         result.andExpect(status().isOk())
                 .andExpect(jsonPath("$.capacity", is(15)));
+    }
+
+    @Test
+    void should_return_ok_when_update_parking_lot_success() throws Exception {
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setCapacity(13);
+        when(parkingLotService.findByNameLike("Parking1")).thenReturn(Optional.of(parkingLot));
+        when(parkingLotService.isUpdated("Parking1", 13)).thenReturn(true);
+
+        ResultActions result = mvc.perform(patch("/parkingLots/{name}", "Parking1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(parkingLot)));
+
+        result.andExpect(status().isOk());
     }
 }

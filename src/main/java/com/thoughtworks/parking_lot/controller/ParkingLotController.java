@@ -35,4 +35,18 @@ public class ParkingLotController {
     public Iterable<ParkingLot> getAllParkingLots(@RequestParam(defaultValue = "0", required = false) int page){
         return parkingLotService.findAll(page);
     }
+
+    @GetMapping(path="/{name}")
+    public ParkingLot getSpecificParkingLot(@PathVariable("name") String name){
+        return parkingLotService.findByNameLike(name).get();
+    }
+
+    @PatchMapping(path="/{name}")
+    public ResponseEntity<ParkingLot>  updateParkingLot(@PathVariable("name") String name, @RequestBody ParkingLot parkingLot){
+        if(parkingLotService.isUpdated(name, parkingLot.getCapacity())){
+            return new ResponseEntity<>(OK);
+        }
+        return  new ResponseEntity<>(NOT_FOUND);
+    }
+
 }

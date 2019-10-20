@@ -3,6 +3,7 @@ package com.thoughtworks.parking_lot.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -10,12 +11,11 @@ public class ParkingLot {
 
     @Id
     @NotNull
-    @Column(unique=true,nullable = false)
+    @Column(unique = true)
     private String name;
 
     @Column(columnDefinition = "INT(5) CHECK (capacity >= 0)")
     private Integer capacity;
-
 
     private String location;
 

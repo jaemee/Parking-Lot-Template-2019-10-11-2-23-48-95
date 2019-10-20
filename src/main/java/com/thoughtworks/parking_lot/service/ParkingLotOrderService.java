@@ -14,15 +14,16 @@ import java.util.Optional;
 public class ParkingLotOrderService {
 
     private static final String OPEN = "Open";
+    public static final String CLOSE = "Close";
 
     @Autowired
-    private ParkingLotOrderRepository repo;
+    private ParkingLotOrderRepository parkingLotOrderRepo;
 
     @Autowired
     private ParkingLotService parkingLotSvc;
 
-    public ParkingLotOrderService(@Qualifier("orders") ParkingLotOrderRepository repo) {
-        this.repo = repo;
+    public ParkingLotOrderService(@Qualifier("orders") ParkingLotOrderRepository parkingLotOrderRepo) {
+        this.parkingLotOrderRepo = parkingLotOrderRepo;
     }
 
     public ParkingLotOrder save(String parkingLotName, ParkingLotOrder order) {
@@ -31,12 +32,27 @@ public class ParkingLotOrderService {
             order.setParkingLot(parkingLot.get());
             order.setStatus(OPEN);
             order.setCreateTime(getCurrentTime());
-            return repo.save(order);
+            return parkingLotOrderRepo.save(order);
         }
         return null;
     }
 
     private LocalDateTime getCurrentTime() {
         return LocalDateTime.now();
+    }
+
+    public ParkingLotOrder findByPlateNumberLike(String plateNumber){
+        return parkingLotOrderRepo.findByPlateNumberLike(plateNumber).get();
+    }
+
+    public boolean isCarLeft(String plateNumber) {
+        Optional<ParkingLotOrder> order = parkingLotOrderRepo.findByPlateNumberLike(plateNumber);
+        if(order.isPresent()){
+            order.get().setCloseTime(getCurrentTime());
+            order.get().setStatus(CLOSE);
+            parkingLotOrderRepo.save(order.get());
+            return true;
+        }
+        return false;
     }
 }

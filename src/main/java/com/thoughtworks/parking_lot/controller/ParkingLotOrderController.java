@@ -3,9 +3,10 @@ package com.thoughtworks.parking_lot.controller;
 import com.thoughtworks.parking_lot.entity.ParkingLotOrder;
 import com.thoughtworks.parking_lot.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping(value = "parkingLots")
@@ -19,6 +20,14 @@ public class ParkingLotOrderController {
     public ParkingLotOrder addParkingLotOrder(@PathVariable("parkingLotName") String parkingLotName,
                                               @RequestBody ParkingLotOrder order){
         return parkingLotOrderSvc.save(parkingLotName, order);
+    }
+
+    @PatchMapping(path="/{name}/orders/{plateNUmber}")
+    public ResponseEntity<ParkingLotOrder> updateOrder(@PathVariable("plateNUmber") String plateNUmber){
+        if(parkingLotOrderSvc.isCarLeft(plateNUmber)){
+            return new ResponseEntity<>(OK);
+        }
+        return new ResponseEntity<>(NOT_FOUND);
     }
 
 }

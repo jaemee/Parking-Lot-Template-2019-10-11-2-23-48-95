@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
-@RequestMapping("/parkingLots")
+@RequestMapping(value = "/parkingLots")
 public class ParkingLotController {
 
     @Autowired

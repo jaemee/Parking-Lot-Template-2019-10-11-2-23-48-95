@@ -44,4 +44,12 @@ public class ParkingLot {
     public void setLocation(String location) {
         this.location = location;
     }
+
+    public List<ParkingLotOrder> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<ParkingLotOrder> orders) {
+        this.orders = orders;
+    }
 }

@@ -2,6 +2,7 @@ package com.thoughtworks.parking_lot.service;
 
 import com.thoughtworks.parking_lot.entity.ParkingLot;
 import com.thoughtworks.parking_lot.repository.ParkingLotRepository;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
@@ -48,5 +49,20 @@ public class ParkingLotService {
             return true;
         }
         return false;
+    }
+
+    public boolean isParkingLotAvailable(String name) throws NotFoundException {
+        int totalAvailableSpace = 0;
+        Optional<ParkingLot> parkingLot = findByNameLike(name);
+        if(parkingLot.isPresent()){
+            int totalParkedCars = parkingLotRepo.getTotalNumberOfParkedCars(name);
+            totalAvailableSpace = parkingLot.get().getCapacity() - totalParkedCars;
+
+            if(totalAvailableSpace >= 0){
+                return true;
+            }
+            return false;
+        }
+        throw new NotFoundException("Parking lot not found!");
     }
 }

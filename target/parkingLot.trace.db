@@ -1,0 +1,13 @@
+2019-10-20 13:33:49 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLException: Syntax error in SQL statement "CREATE TABLE ""PARKING_LOT"" (
+    ""NAME"" VARCHAR(255) NOT NULL,
+    ""CAPACITY"" INT(5) CHECK (""CAPACITY"" >= 0)
+    ""LOCATION""[*] VARCHAR(255) DEFAULT NULL,
+    PRIMARY KEY (""NAME"")
+) "; expected "[, ::, *, /, %, +, -, ||, ~, !~, NOT, LIKE, ILIKE, REGEXP, IS, IN, BETWEEN, AND, OR, REFERENCES, ,, )"; SQL statement:
+CREATE TABLE `parking_lot` (
+    `name` VARCHAR(255) NOT NULL,
+    `capacity` INT(5) CHECK (`capacity` >= 0)
+    `location` VARCHAR(255) DEFAULT NULL,
+    PRIMARY KEY (`name`)
+) [42001-197]

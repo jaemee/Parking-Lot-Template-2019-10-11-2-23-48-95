@@ -15,6 +15,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.awt.print.Pageable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+import java.util.stream.IntStream;
+
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -62,9 +68,8 @@ class ParkingLotControllerTest {
 
     @Test
     void should_return_parking_lots_with_pagination() throws Exception {
-        ResultActions result = mvc.perform(get("/parkingLots?pageNumber=1")
-                .contentType(MediaType.APPLICATION_JSON));
-        result.andExpect(status().isOk())
-                .andExpect(jsonPath("$.size", is(15)));
+        ResultActions result = mvc.perform(get("/parkingLots")
+                .contentType(MediaType.APPLICATION_JSON).param("page", "0"));
+        result.andExpect(status().isOk());
     }
 }

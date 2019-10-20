@@ -1,7 +1,5 @@
 package com.thoughtworks.parking_lot.controller;
 
-import antlr.build.Tool;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.parking_lot.entity.ParkingLot;
 import com.thoughtworks.parking_lot.repository.ParkingLotRepository;
@@ -17,14 +15,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
@@ -64,5 +58,13 @@ class ParkingLotControllerTest {
     void should_not_delete_and_return_not_found_when_parking_lot_not_exist() throws Exception {
         ResultActions result = mvc.perform(delete("/parkingLots/Parking 1"));
         result.andExpect(status().isNotFound());
+    }
+
+    @Test
+    void should_return_parking_lots_with_pagination() throws Exception {
+        ResultActions result = mvc.perform(get("/parkingLots?pageNumber=1")
+                .contentType(MediaType.APPLICATION_JSON));
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.size", is(15)));
     }
 }

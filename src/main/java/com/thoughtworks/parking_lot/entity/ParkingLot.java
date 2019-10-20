@@ -1,10 +1,8 @@
 package com.thoughtworks.parking_lot.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 public class ParkingLot {
@@ -18,6 +16,10 @@ public class ParkingLot {
     private Integer capacity;
 
     private String location;
+
+    @OneToMany(mappedBy = "parkingLot",
+            cascade = {CascadeType.ALL})
+    private List<ParkingLotOrder> orders;
 
     public String getName() {
         return name;

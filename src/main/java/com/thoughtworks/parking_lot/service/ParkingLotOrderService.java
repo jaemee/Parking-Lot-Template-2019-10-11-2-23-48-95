@@ -14,7 +14,7 @@ import java.util.Optional;
 public class ParkingLotOrderService {
 
     private static final String OPEN = "Open";
-    public static final String CLOSE = "Close";
+    private static final String CLOSE = "Close";
 
     @Autowired
     private ParkingLotOrderRepository parkingLotOrderRepo;

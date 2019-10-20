@@ -1,6 +1,7 @@
 package com.thoughtworks.parking_lot.controller;
 
 import antlr.build.Tool;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.parking_lot.entity.ParkingLot;
 import com.thoughtworks.parking_lot.service.ParkingLotService;
@@ -15,16 +16,19 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(ParkingLotController.class)
 @ActiveProfiles(profiles = "test")
-public class ParkingLotControllerTest {
+class ParkingLotControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -36,7 +40,7 @@ public class ParkingLotControllerTest {
     private ParkingLotService parkingLotService;
 
     @Test
-    public void should_add_parkingLot() throws Exception {
+    void should_add_parkingLot() throws Exception {
         ParkingLot parkingLot = new ParkingLot();
         ResultActions result = mvc.perform(post("/parkingLots")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -44,4 +48,14 @@ public class ParkingLotControllerTest {
         result.andExpect(status().isCreated());
     }
 
+    @Test
+    void should_return_ok_when_parking_lot_deleted() throws Exception {
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setName("Parking 1");
+        when(parkingLotService.delete("Parking 1")).thenReturn(true);
+        ResultActions result = mvc.perform(delete("/parkingLots")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(parkingLot)));
+        result.andExpect(status().isOk());
+    }
 }

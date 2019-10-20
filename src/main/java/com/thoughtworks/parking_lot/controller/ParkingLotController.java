@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
@@ -27,5 +29,10 @@ public class ParkingLotController {
             return new ResponseEntity<>(OK);
         }
         return new ResponseEntity<>(NOT_FOUND);
+    }
+
+    @GetMapping
+    public Iterable<ParkingLot> getAllParkingLots(@RequestParam(defaultValue = "0", required = false) int page){
+        return parkingLotService.findAll(page);
     }
 }

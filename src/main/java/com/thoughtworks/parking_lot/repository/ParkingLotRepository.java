@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -14,6 +15,6 @@ import java.util.Optional;
 public interface ParkingLotRepository extends JpaRepository<ParkingLot, Long> {
     Optional<ParkingLot> findByNameLike(String name);
 
-    @Query("SELECT COUNT(p.*) FROM ParkingLot p WHERE p.orders.status='Open' AND p.name=:name")
-    Integer getTotalNumberOfParkedCars(@Param("name") String name);
+    @Query(value = "SELECT p FROM ParkingLot p JOIN p.orders o WHERE o.status='Open' AND p.name=:name")
+    List<ParkingLot> getTotalNumberOfParkedCars(@Param("name") String name);
 }

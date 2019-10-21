@@ -55,7 +55,7 @@ public class ParkingLotService {
         int totalAvailableSpace = 0;
         Optional<ParkingLot> parkingLot = findByNameLike(name);
         if(parkingLot.isPresent()){
-            int totalParkedCars = parkingLotRepo.getTotalNumberOfParkedCars(name);
+            int totalParkedCars = parkingLotRepo.getTotalNumberOfParkedCars(name).size();
             totalAvailableSpace = parkingLot.get().getCapacity() - totalParkedCars;
 
             if(totalAvailableSpace >= 0){

@@ -1,21 +1,21 @@
 package com.thoughtworks.parking_lot.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thoughtworks.parking_lot.entity.ParkingLot;
 import com.thoughtworks.parking_lot.entity.ParkingLotOrder;
 import com.thoughtworks.parking_lot.repository.ParkingLotOrderRepository;
 import com.thoughtworks.parking_lot.service.ParkingLotOrderService;
-import org.junit.jupiter.api.BeforeEach;
+import com.thoughtworks.parking_lot.service.ParkingLotService;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Optional;
 
@@ -26,13 +26,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
+@WebMvcTest(ParkingLotOrderController.class)
+@ActiveProfiles(profiles = "test")
 public class ParkingLotOrderControllerTest {
 
     @Autowired
-    private WebApplicationContext webApplicationContext;
-    private MockMvc mvc;
+    MockMvc mvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private ParkingLotOrderService parkingLotOrderSvc;
@@ -40,13 +43,9 @@ public class ParkingLotOrderControllerTest {
     @MockBean
     private ParkingLotOrderRepository parkingLotOrderRepo;
 
-    @BeforeEach
-    public void setUp() {
-        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-    }
+    @MockBean
+    private ParkingLotService parkingLotSvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Test
     public void should_add_parking_lot_order() throws Exception {
@@ -69,7 +68,21 @@ public class ParkingLotOrderControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(order)));
 
-        result.andExpect(status().isOk())
-                .andExpect(jsonPath("$.status", is("Close")));
+        result.andExpect(status().isOk());
+    }
+
+    @Test
+    void should_return_message_when_parking_is_full() throws Exception {
+        ParkingLot parkingLot = new ParkingLot();
+        when(parkingLot.getName()).thenReturn("Park2");
+
+        when(parkingLotSvc.isParkingLotAvailable("Park2")).thenReturn(false);
+
+        ResultActions result = mvc.perform(post("/parkingLots/{name}/orders", "Park2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(parkingLot)));
+
+        result.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message", is("Parking lot full!")));
     }
 }
